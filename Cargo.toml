@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "src/*",
+]
+
+[workspace.dependencies]
+fastcrypto = {git = "https://github.com/MystenLabs/fastcrypto", rev = "306465d4fe04f6c26359d885f3b0a548b661de40"}
+ethers = {git="https://github.com/gakonst/ethers-rs", rev="ed47eaadad7d751cff9c0f59517b0fc3fb284cd3"}
