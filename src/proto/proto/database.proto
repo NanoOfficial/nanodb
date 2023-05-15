@@ -1,0 +1,140 @@
+syntax = "proto3";
+
+package database_proto;
+
+message Database {
+    bytes address = 1;
+    bytes sender = 2;
+    repeated bytes tx = 3;
+    repeated Collection collections = 4;
+    string desc =5;
+}
+
+message Collection {
+    bytes id = 1;
+    string name = 2;
+    repeated Index index_list = 3;
+}
+
+message Document {
+  bytes id = 1;
+  bytes doc = 2;
+  bytes owner = 3;
+  bytes tx_id = 4;
+}
+
+message Index {
+
+  message IndexField {
+    enum Order {
+      ORDER_UNSPECIFIED = 0;
+      ASCENDING = 1;
+      DESCENDING = 2;
+    }
+
+    enum ArrayConfig {
+      ARRAY_CONFIG_UNSPECIFIED = 0;
+      CONTAINS = 1;
+    }
+
+    string field_path = 1;
+
+    oneof value_mode {
+      Order order = 2;
+      ArrayConfig array_config = 3;
+    }
+  }
+
+  enum State {
+    STATE_UNSPECIFIED = 0;
+    CREATING = 1;
+    READY = 2;
+    NEEDS_REPAIR = 3;
+  }
+
+  string name = 1;
+
+  uint32 id = 2;
+
+  repeated IndexField fields = 3;
+}
+
+message StructuredQuery {
+  message Filter {
+    oneof filter_type {
+      FieldFilter field_filter = 1;
+      CompositeFilter composite_filter = 2;
+    }
+  }
+
+  message CompositeFilter {
+    enum Operator {
+      OPERATOR_UNSPECIFIED = 0;
+
+      AND = 1;
+    }
+
+    Operator op = 1;
+
+    repeated Filter filters = 2;
+  }
+
+  message Value {
+
+    oneof value_type {
+      bool boolean_value = 1;
+
+      int64 integer_value = 2;
+
+      double double_value = 3;
+
+      string string_value = 17;
+
+    }
+  }
+
+  message FieldFilter {
+
+    enum Operator {
+
+      OPERATOR_UNSPECIFIED = 0;
+
+      LESS_THAN = 1;
+
+      LESS_THAN_OR_EQUAL = 2;
+
+      GREATER_THAN = 3;
+
+      GREATER_THAN_OR_EQUAL = 4;
+
+      EQUAL = 5;
+
+      NOT_EQUAL = 6;
+
+      ARRAY_CONTAINS = 7;
+
+    }
+
+    string field = 1;
+
+    Operator op = 2;
+
+    Value value = 3;
+  }
+
+  message Projection {
+    repeated string fields = 1;
+  }
+
+  message Limit {
+    int32 limit = 1;
+  }
+
+  Projection select = 1;
+
+  string collection_name = 2;
+
+  Filter where = 3;
+
+  Limit limit = 5;
+}
