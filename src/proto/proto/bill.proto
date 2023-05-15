@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package bill_proto;
+
+enum BillType {
+    BillForMutation = 0;
+    BillForQuery = 1;
+    BillForMint = 2;
+}
+
+message Bill {
+    uint64 gas_fee = 1;
+    uint64 block_id = 2;
+    BillType bill_type = 4;
+    uint64 time = 5;
+    bytes tx_id = 6;
+    bytes owner = 8;
+    bytes to = 9;
+}
+
+message BillQueryRequest {
+    uint64 block_height = 1;
+}
