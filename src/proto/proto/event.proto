@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package event_proto;
+
+enum EventType {
+    Block = 0;
+    Mutation = 1;
+    Query = 2;
+}
+
+message BlockEvent {
+    uint64 height= 1;
+    bytes block_hash = 2;
+    bytes app_hash = 3;
+    string chain_id = 4;
+    uint64 gas = 5;
+}
+
+message MutationEvent {
+    string sender = 1;
+    enum MutationEventStatus {
+        Deliveried = 0;
+        OutOfGas = 1;
+        Invalid = 2;
+    }
+    enum ToAddressType {
+        Database = 0;
+        Account = 1;
+    }
+    MutationEventStatus status = 2;
+    string to = 3;
+    uint64 gas = 4;
+    uint64 height= 5;
+    string hash = 6;
+    ToAddressType to_addr_type = 7;
+    repeated string collections = 8;
+}
+
+message EventMessage {
+    EventType type = 1;
+    oneof event {
+        MutationEvent mutation_event = 2;
+        BlockEvent block_event = 3;
+    }
+}
+
+message MutationEventFilter {
+    string sender = 1;
+}
+
+message BlockEventFilter {}
+
+message EventFilter {
+    oneof filter {
+        MutationEventFilter mfilter = 1;
+        BlockEventFilter bfilter = 2;
+    }
+}
+
+message Subscription {
+    repeated EventType topics = 1;
+    repeated EventFilter filters = 2;
+}

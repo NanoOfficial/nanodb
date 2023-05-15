@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+import "base.proto";
+import "database.proto";
+
+package mutation_proto;
+
+enum DatabaseAction {
+    CreateDB = 0;
+    AddCollection = 1;
+    AddDocument = 2;
+    DeleteDocument = 3;
+    UpdateDocument = 4;
+}
+
+message DatabaseMutation {
+    base_proto.BroadcastMeta meta = 1;
+    DatabaseAction action = 2;
+    bytes db_address = 3;
+    repeated CollectionMutation collection_mutations = 4;
+    repeated DocumentMutation document_mutations = 5;
+    string db_desc = 6;
+}
+
+message CollectionMutation {
+    repeated database_proto.Index index = 1;
+    string collection_name = 2;
+}
+
+message DocumentMutation {
+    string collection_name = 1;
+    repeated bytes documents = 2;
+    repeated string ids = 3;
+
+    repeated DocumentMask masks = 4;
+}
+message DocumentMask {
+    repeated string fields = 1;
+}
+
+message MintCreditsMutation {
+    uint32 chain_id = 1;
+    uint64 block_id = 2;
+    bytes tx_id = 3;
+    bytes to = 5;
+    uint64 amount = 6;
+    base_proto.BroadcastMeta meta = 7;
+}
+
+enum PayloadType {
+    QuerySessionPayload =0;
+    DatabasePayload = 1;
+    MintCreditsPayload = 2;
+
+    TypedDataPayload = 3;
+}
+
+message WriteRequest {
+    bytes signature = 1;
+
+    bytes payload = 2;
+    PayloadType payload_type = 4;
+}

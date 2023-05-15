@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "base.proto";
+import "mutation.proto";
+
+package session_proto;
+
+message QuerySessionInfo {
+
+    int32 id = 1;
+    int64 start_time = 2;
+    int32 query_count = 3;
+
+    base_proto.BroadcastMeta meta = 4;
+}
+
+message OpenSessionPayload {
+    string header = 1;
+    int64 start_time = 2;
+}
+
+
+message QuerySession {
+
+    base_proto.BroadcastMeta meta = 1;
+
+    bytes payload = 2;
+
+    bytes client_signature = 3;
+
+    mutation_proto.PayloadType payload_type = 4;
+}

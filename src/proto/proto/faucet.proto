@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package faucet_proto;
+
+message FaucetRecord {
+    bytes addr = 1;
+    uint32 ts = 2;
+    uint64 amount = 3;
+}
+
+message FaucetRequest {
+    bytes hash = 1;
+    bytes signature = 2;
+}
+
+message FaucetResponse {
+    int32 code = 1;
+    string msg = 2;
+}
+
+service FaucetNode {
+    rpc Faucet(FaucetRequest) returns (FaucetResponse){}
+}
