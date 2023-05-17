@@ -18,5 +18,5 @@ pub fn bytes_to_readable_num_str(bytes_size: u64) -> String {
 }
 
 pub fn units_to_readable_num_str(units: u64) -> String {
-    format!("{:.6} db3", units as f64 / 1000_000_000.0)
+    format!("{:.6} nano", units as f64 / 1000_000_000.0)
 }
