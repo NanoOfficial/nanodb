@@ -1,14 +1,19 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+// @file: lib.rs
+// @author: Krisna Pranav
+
+use anyhow::{ensure, Result};
+
+pub fn ensure_len_eq(data: &[u8], len: usize) -> Result<()> {
+    ensure!(
+        data.len() == len,
+        "Unexpected data len {}, expected {}.",
+        data.len(),
+        len,
+    );
+    Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub mod account_keys;
+pub mod bill_key;
+pub mod cost;
+pub mod token;
