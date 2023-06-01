@@ -4065,6 +4065,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "497961ef93d974e23eb6f433eb5fe1b7930b659f06d12dec6fc44a8f554c0bba"
 
 [[package]]
+name = "types"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base",
+ "byteorder",
+ "chrono",
+ "crypto",
+ "error",
+ "ethereum-types",
+ "fastcrypto 0.1.5",
+ "hex",
+ "proto",
+]
+
+[[package]]
 name = "uint"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"

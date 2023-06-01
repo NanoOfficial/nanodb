@@ -1,0 +1,18 @@
+[package]
+name = "types"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+byteorder = "1.4.3"
+anyhow = "1.0.66"
+hex = "0.4.3"
+ethereum-types = { version = "0.14.0", default-features = false }
+fastcrypto="0.1.3"
+crypto={ path = "../crypto" }
+base={ path = "../base" }
+proto={ path ="../proto" }
+error={ path = "../error" }
+
+[dev-dependencies]
+chrono = "0.4.22"
