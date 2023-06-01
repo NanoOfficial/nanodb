@@ -1,7 +1,7 @@
 // @file: signature_scheme.rs
 // @author: Krisna Pranav
 
-use error::{Error, Result};
+use error::{NanoError, Result};
 
 pub enum SignatureScheme {
     ED25519,

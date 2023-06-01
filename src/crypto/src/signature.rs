@@ -1,11 +1,12 @@
 // @file: signature.rs
 // @author: Krisna Pranav
 
-use crate::address::Address;
-use crate::public_key::PublicKeyScheme;
+// use crate::address::Address;
+use crate::address::NanoAddress;
+use crate::public_key::NanoPublicKeyScheme;
 use crate::serde::Readable;
 use crate::signature_scheme::SignatureScheme;
-use error::{Error, Result};
+use error::{NanoError, Result};
 use enum_dispatch::enum_dispatch;
 use fastcrypto::ed25519::{Ed25519KeyPair, Ed25519PublicKey, Ed25519Signature};
 use fastcrypto::encoding::{Base64, Encoding};
@@ -157,7 +158,7 @@ impl Secp256k1DBSignature {
     pub fn new_hashed(kp: &Secp256k1KeyPair, msg: &[u8]) -> Result<Vec<u8>> {
         let secp = Secp256k1::signing_only();
         let message = Message::from_slice(msg)
-            .map_err(|e| Error::InvalidSignature(format!("bad message for {e}")))?;
+            .map_err(|e| NanoError::InvalidSignature(format!("bad message for {e}")))?;
         let sig = secp.sign_ecdsa_recoverable(&message, &kp.secret.privkey);
         let (recovery_id, sig) = sig.serialize_compact();
         let mut signature_bytes: Vec<u8> =
@@ -203,7 +204,7 @@ impl DBSignatureInner for Secp256k1DBSignature {
 
 pub trait DBSignatureInner: Sized + signature::Signature + PartialEq + Eq + Hash {
     type Sig: Authenticator<PubKey = Self::PubKey>;
-    type PubKey: VerifyingKey<Sig = Self::Sig> + DBPublicKeyScheme;
+    type PubKey: VerifyingKey<Sig = Self::Sig> + NanoPublicKeyScheme;
     type KeyPair: KeypairTraits<PubKey = Self::PubKey, Sig = Self::Sig>;
     const LENGTH: usize = Self::Sig::LENGTH + Self::PubKey::LENGTH + 1;
     const SCHEME: SignatureScheme = Self::PubKey::SIGNATURE_SCHEME;
@@ -223,7 +224,7 @@ pub trait DBSignatureInner: Sized + signature::Signature + PartialEq + Eq + Hash
         })?;
         let mut signature_bytes: Vec<u8> = Vec::with_capacity(Self::LENGTH);
         signature_bytes
-            .extend_from_slice(&[<Self::PubKey as DBPublicKeyScheme>::SIGNATURE_SCHEME.flag()]);
+            .extend_from_slice(&[<Self::PubKey as NanoPublicKeyScheme>::SIGNATURE_SCHEME.flag()]);
         signature_bytes.extend_from_slice(sig.as_ref());
         signature_bytes.extend_from_slice(kp.public().as_ref());
         Self::from_bytes(&signature_bytes[..])
@@ -236,7 +237,7 @@ pub trait DBSignature: Sized + signature::Signature {
     fn signature_bytes(&self) -> &[u8];
     fn public_key_bytes(&self) -> &[u8];
     fn scheme(&self) -> SignatureScheme;
-    fn verify(&self, value: &[u8]) -> Result<DBAddress>;
+    fn verify(&self, value: &[u8]) -> Result<NanoAddress>;
 }
 
 pub trait Signable<W> {
@@ -258,10 +259,10 @@ impl<S: DBSignatureInner + Sized> DBSignature for S {
         S::PubKey::SIGNATURE_SCHEME
     }
 
-    fn verify(&self, value: &[u8]) -> Result<DBAddress> {
+    fn verify(&self, value: &[u8]) -> Result<NanoAddress> {
         let (sig, pk) = &self.get_verification_inputs()?;
         pk.verify(value, sig)
             .map_err(|e| NanoError::InvalidSignature(format!("{e}")))?;
-        Ok(DBAddress::from(pk))
+        Ok(NanoAddress::from(pk))
     }
 }

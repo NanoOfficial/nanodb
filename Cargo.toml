@@ -1,6 +1,9 @@
 [workspace]
 members = [
-    "src/*",
+    "src/base",
+    "src/crypto",
+    "src/error",
+    "src/proto",
 ]
 
 [workspace.dependencies]
