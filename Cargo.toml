@@ -4,7 +4,9 @@ members = [
     "src/crypto",
     "src/error",
     "src/proto",
-    "src/types"
+    "src/types",
+    "src/storage",
+    "src/merkdb"
 ]
 
 [workspace.dependencies]
